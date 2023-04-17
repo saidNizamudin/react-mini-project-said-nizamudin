@@ -1,0 +1,96 @@
+.container {
+	padding: 1em;
+}
+
+.title {
+	font-weight: 200;
+	margin: 0 0 0.25em 0;
+}
+
+.wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.listCard,
+.statsCard {
+	padding: 0;
+	height: fit-content;
+	min-height: 200px;
+	margin-bottom: 1.5em;
+	margin-right: 1em;
+	display: flex;
+	transition: all 0.2s ease-in-out;
+}
+
+.listCard {
+	width: 22%;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.header {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.createCard {
+	background: none !important;
+	border: 10px solid #000000 !important;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	width: 30%;
+	height: 60%;
+	margin-bottom: 1.5em;
+	margin-right: 1em;
+	display: flex;
+	transition: all 0.2s ease-in-out;
+	padding: 1em !important;
+}
+
+.statsCard {
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	width: 70%;
+}
+
+.listCardTitle {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin: 0 0;
+}
+
+.listCardText {
+	font-size: 1em;
+	margin: 1 0;
+	word-break: break-all;
+}
+
+.listCardFooter {
+	font-size: 0.75em;
+	margin-top: auto;
+}
+
+.icon {
+	width: 40%;
+	height: 40%;
+	margin-right: 1em;
+}
+
+.createText {
+	font-weight: 200;
+	margin: 0;
+}
+
+.createCard:hover,
+.listCard:hover {
+	cursor: pointer;
+	background-color: #ababab;
+	transform: scale(1.05);
+	z-index: 1000;
+}

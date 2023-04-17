@@ -1,0 +1,22 @@
+.pill {
+	display: inline-block;
+	padding: 6px 12px;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1;
+	text-align: center;
+	color: #fff;
+	border-radius: 50px;
+}
+
+.green {
+	background-color: #28a745;
+}
+
+.yellow {
+	background-color: #ffc107;
+}
+
+.red {
+	background-color: #dc3545;
+}

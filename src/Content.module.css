@@ -1,0 +1,106 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+}
+
+.sidebarContainer {
+	top: 0;
+	left: 0;
+	bottom: 0;
+	height: 100vh;
+	z-index: 1000;
+	display: flex !important;
+	flex-direction: column;
+	border: none !important;
+	width: 250px !important;
+	background-color: #f1f1f1 !important;
+	position: fixed !important;
+}
+
+.content {
+	padding: 15px 15px 15px 0 !important;
+	height: 100%;
+	width: 100%;
+	margin-left: 250px;
+}
+
+.sidebarContainer > div {
+	padding: 15px !important;
+	background-color: #f1f1f1 !important;
+}
+
+.sidebar {
+	height: 100%;
+	background-color: white;
+	border-radius: 0.5em;
+}
+
+.sidebar > ul {
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.menu {
+	display: flex;
+	flex-direction: column;
+	padding: 1em;
+	color: black;
+}
+
+.title {
+	font-size: 1rem;
+	font-weight: bold;
+	text-align: center;
+	background-color: #f1f1f1;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	margin-bottom: 0.5em;
+	color: black;
+}
+
+.link,
+.logout {
+	border-radius: 0.5em;
+	display: flex !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	height: 100%;
+	padding: 0.4em 0;
+}
+
+.logout {
+	color: #d64343;
+}
+
+.link:hover {
+	transition: all 0.3s ease-in-out;
+	transition-duration: 0.2s;
+	color: white;
+	background-color: black !important;
+}
+
+.logout:hover {
+	transition: all 0.3s ease-in-out;
+	transition-duration: 0.2s;
+	color: white;
+	background-color: #d64343 !important;
+}
+
+.link > a,
+.logout > a {
+	padding: 0 !important;
+	height: 100% !important;
+}
+
+.link > a:hover,
+.logout > a:hover {
+	background-color: transparent !important;
+}
+
+.line {
+	border: 1px solid #f1f1f1;
+	margin: 0;
+}
