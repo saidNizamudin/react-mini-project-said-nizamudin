@@ -11,8 +11,7 @@ export default function Content({ children }) {
 	const navigate = useNavigate();
 
 	if (!isLoggedIn) {
-		console.log('hais');
-		return <Navigate to={'/login'} />;
+		return <Navigate to={'/sign-in'} />;
 	}
 
 	return (
