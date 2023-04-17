@@ -1,0 +1,83 @@
+.title {
+	font-size: 2em;
+	font-weight: 200;
+	margin: 0 0 1em 0;
+}
+
+.formGroup {
+	display: flex;
+	margin-bottom: 2em;
+	flex-direction: row;
+}
+
+.labelContainer {
+	width: 30%;
+	display: flex;
+}
+
+.label {
+	font-size: 1em;
+	font-weight: 700;
+	text-align: left;
+	margin-bottom: 0.25em;
+}
+
+.inputContainer {
+	width: 100%;
+	display: flex;
+	position: relative;
+	flex-direction: column;
+}
+
+.icon > div {
+	width: 100% !important;
+}
+
+.input {
+	width: -webkit-fill-available;
+	padding: 0.5em 1em;
+	border: 2px solid black;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+.input::placeholder {
+	color: #a9a9a9;
+	margin: 0;
+}
+
+.helpIcon {
+	margin-right: 0.5em;
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+}
+
+.iconSuccess {
+	color: green;
+	position: absolute;
+	right: 1em;
+}
+
+.iconError {
+	color: red;
+	position: absolute;
+	right: 1em;
+}
+
+.helpText {
+	font-size: 12px;
+	text-align: left;
+	margin-top: 0.1em;
+}
+
+.helpTextSuccess {
+	color: green;
+}
+
+.helpTextError {
+	color: red;
+}
