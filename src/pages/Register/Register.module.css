@@ -3,17 +3,17 @@
 	margin: 0 auto;
 }
 
-.containerLogin {
+.containerRegister {
 	width: 100%;
 	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 15px;
+	padding: 0;
 }
 
-.wrapLogin {
-	width: 25%;
+.wrapRegister {
+	width: 70%;
 	background: #fff;
 	border-radius: 15px;
 	padding: 3em;
@@ -25,7 +25,27 @@
 }
 
 .form {
-	margin: 2em 0 1em 0;
+	margin: 2em 0 3em 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.inputSplitter1,
+.inputSplitter2 {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.inputSplitter1 {
+	width: 100%;
+	margin-right: 3em;
+}
+
+.inputSplitter2 {
+	width: 100%;
+	margin-left: 3em;
 }
 
 .title {
@@ -34,12 +54,12 @@
 	text-align: center;
 }
 
-.emailInput,
-.passwordInput {
+.inputContainer {
 	width: 100%;
 	position: relative;
-	border-bottom: 2px solid #adadad;
-	margin-bottom: 1em;
+	margin-top: 1em;
+	display: flex;
+	flex-direction: column;
 }
 
 .input {
@@ -48,8 +68,8 @@
 	line-height: 1.2;
 	border: none;
 	display: block;
-	width: 100%;
-	height: 45px;
+	height: 30px;
+	border-bottom: 2px solid #adadad;
 }
 
 .input:focus {
@@ -77,4 +97,18 @@
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+.helpText {
+	font-size: 12px;
+	color: black;
+	margin-top: 0.5em;
+	display: flex;
+	align-items: center;
+}
+
+.iconHelpText {
+	width: 20px;
+	height: 20px;
+	margin-right: 0.5em;
 }

@@ -57,7 +57,7 @@ export default function Login() {
 					<Button type="Primary">Login</Button>
 					<div className={styles.signUp}>
 						<span>Don’t have an account?</span>
-						<a className={styles.signUpLink} href="/register">
+						<a className={styles.signUpLink} href="/sign-up">
 							Sign Up
 						</a>
 					</div>

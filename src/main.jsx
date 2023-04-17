@@ -5,7 +5,7 @@ import { ProSidebarProvider } from 'react-pro-sidebar';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import Content from './Content';
-import { Home, CreateTask, CreateList, Login } from './pages';
+import { Home, CreateTask, CreateList, Login, Register } from './pages';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<ApolloProvider client={client}>
@@ -13,7 +13,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 			<ProSidebarProvider>
 				<BrowserRouter>
 					<Routes>
-						<Route path="/login" element={<Login />}></Route>
+						<Route path="/sign-in" element={<Login />}></Route>
+						<Route path="/sign-up" element={<Register />}></Route>
 						<Route
 							path="/"
 							element={
