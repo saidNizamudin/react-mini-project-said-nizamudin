@@ -13,7 +13,7 @@
 	display: flex !important;
 	flex-direction: column;
 	border: none !important;
-	width: 250px !important;
+	width: 20% !important;
 	background-color: #f1f1f1 !important;
 	position: fixed !important;
 }
@@ -22,7 +22,7 @@
 	padding: 15px 15px 15px 0 !important;
 	height: 100%;
 	width: 100%;
-	margin-left: 250px;
+	margin-left: 20%;
 }
 
 .sidebarContainer > div {

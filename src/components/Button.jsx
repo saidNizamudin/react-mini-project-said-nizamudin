@@ -1,7 +1,7 @@
 import styles from './Button.module.css';
 import classNames from 'classnames/bind';
 
-export default function Button({ clickFunction, type, children }) {
+export default function Button({ clickFunction, type, children, className }) {
 	const colorStyle = (type) => {
 		switch (type) {
 			case 'Primary':
@@ -18,7 +18,7 @@ export default function Button({ clickFunction, type, children }) {
 	return (
 		<button
 			disabled={type == 'Disabled'}
-			className={classNames(styles.button, colorStyle(type))}
+			className={classNames(styles.button, colorStyle(type), className)}
 			onClick={clickFunction}
 		>
 			{children}

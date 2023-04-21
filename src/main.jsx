@@ -5,7 +5,7 @@ import { ProSidebarProvider } from 'react-pro-sidebar';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import Content from './Content';
-import { Home, CreateTask, CreateList, Login, Register } from './pages';
+import { Home, CreateTask, CreateList, Login, Register, ListDetail } from './pages';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<ApolloProvider client={client}>
@@ -36,6 +36,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 							element={
 								<Content>
 									<CreateList />
+								</Content>
+							}
+						></Route>
+						<Route
+							path="/list-detail/:id"
+							element={
+								<Content>
+									<ListDetail />
 								</Content>
 							}
 						></Route>
