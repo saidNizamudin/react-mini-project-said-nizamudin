@@ -2,9 +2,13 @@ import styles from './Register.module.css';
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faEye, faEyeSlash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
-import ReactDOMServer from 'react-dom/server';
+import { faCheckCircle, faEye, faEyeSlash, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import hashPassword from '../../utilities/password';
+import { INSERT_USER } from '../../clients/user';
+import { useMutation } from '@apollo/client';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Register() {
 	const [username, setUsername] = useState('');
@@ -15,6 +19,26 @@ export default function Register() {
 	const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
 	const [validation, setValidation] = useState({});
+
+	const [insertUser, { loading }] = useMutation(INSERT_USER, {
+		onCompleted: (response) => {
+			const data = response.insert_user.returning;
+			{
+				data.length > 0
+					? toast.success(`${data[0].username} has been registered!, please login to continue`, {
+							position: toast.POSITION.TOP_RIGHT,
+					  })
+					: toast.error('Email already registered', {
+							position: toast.POSITION.TOP_RIGHT,
+					  });
+			}
+		},
+		onError: (error) => {
+			toast.error(error.message, {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
 
 	useEffect(() => {
 		setValidation({
@@ -29,6 +53,14 @@ export default function Register() {
 			confirmationPassword: password === passwordConfirmation,
 		});
 	}, [username, email, password, passwordConfirmation]);
+
+	const handleSubmit = () => {
+		hashPassword(password).then((hashedPassword) => {
+			insertUser({
+				variables: { email, password: hashedPassword, username },
+			});
+		});
+	};
 
 	return (
 		<div className={styles.containerRegister}>
@@ -187,8 +219,11 @@ export default function Register() {
 						</div>
 					</div>
 				</form>
-				<Button type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}>
-					Create Account
+				<Button
+					type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}
+					clickFunction={handleSubmit}
+				>
+					{!loading ? 'Create Account' : <FontAwesomeIcon icon={faSpinner} spin />}
 				</Button>
 				<div className={styles.signUp}>
 					<span>Already have an account?</span>
@@ -197,6 +232,7 @@ export default function Register() {
 					</a>
 				</div>
 			</div>
+			<ToastContainer />
 		</div>
 	);
 }

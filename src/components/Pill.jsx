@@ -1,19 +1,23 @@
-import styles from './Button.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styles from './Pill.module.css';
 import classNames from 'classnames/bind';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
-export default function Button({ color, children }) {
-	const colorStyle = (color) => {
-		switch (color) {
-			case 'Green':
-				return styles.green;
-			case 'Yellow':
-				return styles.yellow;
-			case 'Red':
-				return styles.red;
-			default:
-				return;
-		}
-	};
+export default function Pill({ isDone, isCreate, children, onClick }) {
+	if (isCreate) {
+		return (
+			<div className={classNames(styles.pill, styles.create)} onClick={onClick}>
+				<div className={styles.content}>
+					<FontAwesomeIcon icon={faPlusCircle} />
+					<span>Create New Task Here?</span>
+				</div>
+			</div>
+		);
+	}
 
-	return <div className={classNames(styles.pill, colorStyle)}>{children}</div>;
+	return (
+		<div className={classNames(styles.pill, isDone && styles.done)} onClick={onClick}>
+			<div className={styles.content}>{children}</div>
+		</div>
+	);
 }

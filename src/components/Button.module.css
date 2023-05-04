@@ -9,21 +9,21 @@
 }
 
 .button:disabled {
-	background-color: rgb(229, 229, 229);
-	border: 2px solid rgb(229, 229, 229);
+	background-color: #e5e5e5;
+	border: 2px solid #e5e5e5;
 	cursor: not-allowed;
 	color: black;
 }
 
 .danger {
 	background-color: #d64343;
-	border: 2px solid rgba(255, 255, 255, 0);
+	border: 2px solid #ffffff00;
 	color: white;
 }
 
 .primary {
 	background-color: black;
-	border: 2px solid rgba(255, 255, 255, 0);
+	border: 2px solid #ffffff00;
 	color: white;
 }
 

@@ -6,13 +6,53 @@ import {
 	faCircleExclamation,
 	faCircleCheck,
 	faCircleInfo,
+	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
+import { useMutation } from '@apollo/client';
+import { INSERT_LIST } from '../../clients/list';
+import { ToastContainer, toast } from 'react-toastify';
+import storage from '../../utilities/storage';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CreateList() {
 	const [validation, setValidation] = useState({});
 	const [listName, setListName] = useState('');
 	const [listDescription, setListDescription] = useState('');
+	const userId = storage.get('userId', '');
+
+	const [insertList, { loading }] = useMutation(INSERT_LIST, {
+		onCompleted: (response) => {
+			const data = response.insert_list.returning;
+
+			if (data.length > 0) {
+				toast.success(`List of ${data[0].name} created successfully`, {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} else {
+				toast.error('List could not be created. Please try again later', {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			}
+		},
+		onError: () => {
+			toast.error('List could not be created. Please try again later', {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		insertList({
+			variables: {
+				user_id: userId,
+				name: listName,
+				description: listDescription,
+			},
+		});
+	};
 
 	useEffect(() => {
 		setValidation({
@@ -112,11 +152,15 @@ export default function CreateList() {
 							</span>
 						</div>
 					</div>
-					<Button type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}>
-						<strong>Create</strong>
+					<Button
+						type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}
+						clickFunction={handleSubmit}
+					>
+						{loading ? <FontAwesomeIcon icon={faSpinner} spin /> : <strong>Create</strong>}
 					</Button>
 				</form>
 			</Card>
+			<ToastContainer />
 		</div>
 	);
 }
