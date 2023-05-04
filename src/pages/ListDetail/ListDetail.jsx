@@ -7,19 +7,59 @@ import {
 	faEdit,
 	faInfoCircle,
 	faTrash,
+	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { TASK } from '../../constant';
 import moment from 'moment';
 import { Pill, Button } from '../../components';
 import { findMaxLength } from '../../utilities/find_max_length';
 import classNames from 'classnames/bind';
+import { useSubscription, useMutation } from '@apollo/client';
+import { SUBSCRIBE_TASK, DELETE_TASK } from '../../clients/task';
+import { useParams, useNavigate } from 'react-router-dom';
+import { LoopCircleLoading } from 'react-loadingg';
+import Modal from 'react-awesome-modal';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ListDetail() {
 	const [selectedTask, setSelectedTask] = useState();
 	const [isUseDetail, setIsUseDetail] = useState(false);
-	console.log(selectedTask);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-	const data = TASK.reduce(
+	const { id: listId } = useParams();
+	const navigate = useNavigate();
+
+	const { loading, data: taskData } = useSubscription(SUBSCRIBE_TASK, {
+		variables: {
+			list_id: listId,
+		},
+	});
+
+	const [deleteTask, { loading: deleteLoading }] = useMutation(DELETE_TASK, {
+		onCompleted: () => {
+			toast.success(`${selectedTask.name} deleted successfully`, {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+			setShowDeleteModal(false);
+			setSelectedTask();
+		},
+		onError: () => {
+			toast.error('Task could not be deleted. Please try again later', {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
+
+	const handleDelete = () => {
+		deleteTask({
+			variables: {
+				id: selectedTask.id,
+			},
+		});
+	};
+
+	const data = taskData?.task.reduce(
 		(acc, task) => {
 			if (task.status === 'To Do') {
 				acc.toDo.push(
@@ -59,13 +99,30 @@ export default function ListDetail() {
 			return acc;
 		},
 		{
-			toDo: [<Pill isCreate></Pill>],
-			inProgress: [<Pill isCreate></Pill>],
-			done: [<Pill isCreate></Pill>],
+			toDo: [
+				<Pill
+					isCreate
+					onClick={() => {
+						navigate(`/list/${listId}/create`);
+					}}
+				></Pill>,
+			],
+			inProgress: [
+				<Pill
+					isCreate
+					onClick={() => {
+						navigate(`/list/${listId}/create`);
+					}}
+				></Pill>,
+			],
+			done: [],
 		}
 	);
 
-	const dataMax = findMaxLength(data);
+	if (loading) {
+		return <LoopCircleLoading size="large" color="black" />;
+	}
+
 	return (
 		<>
 			<div
@@ -83,7 +140,7 @@ export default function ListDetail() {
 						</tr>
 					</thead>
 					<tbody>
-						{dataMax.map((item, index) => {
+						{findMaxLength(data).map((item, index) => {
 							return (
 								<tr className={styles.tableRow} key={index}>
 									<td className={styles.tableData}>
@@ -127,7 +184,7 @@ export default function ListDetail() {
 									<div className={styles.detailPoint}>
 										<span className={styles.label}>Due Date</span>
 										<span className={styles.deadline}>
-											{moment(selectedTask.deadline).toLocaleString()}
+											{moment(selectedTask.deadline).format('DD MMM YYYY - HH:mm')}
 										</span>
 									</div>
 									<div className={styles.detailPoint}>
@@ -139,14 +196,26 @@ export default function ListDetail() {
 								</div>
 							</div>
 							<div className={styles.detailAction}>
-								<div className={styles.editContainer}>
+								<Button
+									type="Secondary"
+									className={styles.detailButton}
+									clickFunction={() => {
+										navigate(`/list/${listId}/edit/${selectedTask.id}`);
+									}}
+								>
 									<FontAwesomeIcon icon={faEdit} className={styles.actionIcon} />
-									<span>Edit</span>
-								</div>
-								<div className={styles.deleteContainer}>
+									Edit
+								</Button>
+								<Button
+									type="Danger"
+									className={styles.detailButton}
+									clickFunction={() => {
+										setShowDeleteModal(true);
+									}}
+								>
 									<FontAwesomeIcon icon={faTrash} className={styles.actionIcon} />
-									<span>Delete</span>
-								</div>
+									Delete
+								</Button>
 							</div>
 						</>
 					) : (
@@ -187,6 +256,34 @@ export default function ListDetail() {
 					icon={faAngleDoubleLeft}
 				/>
 			</div>
+			<Modal
+				visible={showDeleteModal}
+				height="20%"
+				width="40%"
+				onClickAway={() => setShowDeleteModal(false)}
+			>
+				<div className={styles.modal}>
+					<div className={styles.modalContent}>
+						<span>
+							Are you sure you want to delete <strong>{selectedTask?.name}</strong>?
+						</span>
+						<div className={styles.buttonModal}>
+							<Button type="Primary" clickFunction={handleDelete}>
+								{!deleteLoading ? `Yes, I'm sure` : <FontAwesomeIcon icon={faSpinner} spin />}
+							</Button>
+							<Button
+								type="Danger"
+								clickFunction={() => {
+									setShowDeleteModal(false);
+								}}
+							>
+								No
+							</Button>
+						</div>
+					</div>
+				</div>
+			</Modal>
+			<ToastContainer />
 		</>
 	);
 }

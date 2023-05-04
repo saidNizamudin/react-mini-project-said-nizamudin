@@ -83,6 +83,7 @@
 
 .editContainer {
 	color: black;
+	justify-content: space-between;
 }
 
 .deleteContainer {
@@ -93,11 +94,6 @@
 	width: 20px;
 	height: 20px;
 	margin-right: 0.25em;
-	transition: all 0.2s ease-in-out;
-}
-
-.actionIcon:hover {
-	transform: scale(1.2);
 }
 
 .detailDivider {
@@ -180,6 +176,7 @@
 .detailAction {
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 }
 
 .closeTitle {
@@ -213,4 +210,41 @@
 	font-weight: bold;
 	color: #ababab;
 	margin: 0;
+}
+
+.modal {
+	height: -webkit-fill-available;
+	padding: 1em;
+}
+
+.modalContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 100%;
+}
+
+.modalContent > span {
+	font-size: 20px;
+}
+
+.buttonModal {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 80%;
+	font-size: 14px;
+}
+
+.buttonModal > button {
+	width: 45%;
+}
+
+.detailButton {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 48%;
 }

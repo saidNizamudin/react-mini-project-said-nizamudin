@@ -13,7 +13,7 @@
 	display: flex !important;
 	flex-direction: column;
 	border: none !important;
-	width: 20% !important;
+	width: 300px !important;
 	background-color: #f1f1f1 !important;
 	position: fixed !important;
 }
@@ -22,7 +22,7 @@
 	padding: 15px 15px 15px 0 !important;
 	height: 100%;
 	width: 100%;
-	margin-left: 20%;
+	margin-left: 300px;
 }
 
 .sidebarContainer > div {
@@ -93,6 +93,7 @@
 .logout > a {
 	padding: 0 !important;
 	height: 100% !important;
+	width: 100% !important;
 }
 
 .link > a:hover,
@@ -103,4 +104,142 @@
 .line {
 	border: 1px solid #f1f1f1;
 	margin: 0;
+}
+
+.menuContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-right: 0.5em;
+}
+
+.editIcon {
+	margin-right: 0.5em;
+}
+
+.editIcon,
+.trashIcon {
+	color: white;
+}
+
+.editIcon:hover,
+.trashIcon:hover {
+	transform: scale(1.2);
+}
+
+.modal {
+	height: -webkit-fill-available;
+	padding: 1em;
+}
+
+.modalContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 100%;
+}
+
+.modalContent > span {
+	font-size: 20px;
+}
+
+.buttonModal {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 80%;
+	font-size: 14px;
+}
+
+.buttonModal > button {
+	width: 45%;
+}
+
+.title {
+	font-size: 1em;
+	font-weight: 200;
+	margin: 0 0 0.5em 0;
+}
+
+.formGroup {
+	display: flex;
+	margin-bottom: 2em;
+	flex-direction: row;
+}
+
+.labelContainer {
+	width: 30%;
+	display: flex;
+}
+
+.label {
+	font-size: 1em;
+	font-weight: 700;
+	text-align: left;
+	margin-bottom: 0.25em;
+}
+
+.inputContainer {
+	width: 100%;
+	display: flex;
+	position: relative;
+	flex-direction: column;
+}
+
+.icon > div {
+	width: 100% !important;
+}
+
+.input {
+	width: -webkit-fill-available;
+	padding: 0.5em 1em;
+	border: 2px solid black;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+.input::placeholder {
+	color: #a9a9a9;
+	margin: 0;
+}
+
+.helpIcon {
+	margin-right: 0.5em;
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+}
+
+.iconSuccess {
+	color: green;
+	position: absolute;
+	right: 1em;
+}
+
+.iconError {
+	color: red;
+	position: absolute;
+	right: 1em;
+}
+
+.helpText {
+	font-size: 12px;
+	text-align: left;
+	margin-top: 0.1em;
+}
+
+.helpTextSuccess {
+	color: green;
+}
+
+.helpTextError {
+	color: red;
+}
+
+.modalForm {
+	width: 100%;
 }

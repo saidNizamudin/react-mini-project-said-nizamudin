@@ -16,6 +16,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import classNames from 'classnames/bind';
+import { INSERT_TASK } from '../../clients/task';
+import { useParams } from 'react-router-dom';
+import storage from '../../utilities/storage';
+import { useMutation } from '@apollo/client';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'react-datetime/css/react-datetime.css';
@@ -23,14 +27,37 @@ import 'react-datetime/css/react-datetime.css';
 export default function CreateTask() {
 	const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
-	const [taskName, setTaskName] = useState('');
+	const [validation, setValidation] = useState({});
 	const [taskDesc, setTaskDesc] = useState({ blocks: [], entityMap: {} });
+	const [taskName, setTaskName] = useState('');
 	const [taskImage, setTaskImage] = useState('');
 	const [taskImageName, setTaskImageName] = useState('');
 	const [taskDeadline, setTaskDeadline] = useState('');
 	const [taskStatus, setTaskStatus] = useState('');
 
-	const [validation, setValidation] = useState({});
+	const userId = storage.get('userId', '');
+	const { id: listId } = useParams();
+
+	const [insertTask, { loading }] = useMutation(INSERT_TASK, {
+		onCompleted: (response) => {
+			const data = response.insert_task.returning;
+
+			if (data.length > 0) {
+				toast.success(`${data[0].name} created successfully`, {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} else {
+				toast.error('Task could not be created. Please try again later', {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			}
+		},
+		onError: () => {
+			toast.error('Task could not be created. Please try again later', {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
 
 	useEffect(() => {
 		setValidation({
@@ -64,6 +91,21 @@ export default function CreateTask() {
 		document.getElementById('taskImage').value = '';
 		setTaskImage('');
 		setTaskImageName('');
+	};
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		insertTask({
+			variables: {
+				user_id: userId,
+				list_id: listId,
+				name: taskName,
+				description: taskDesc,
+				deadline: taskDeadline,
+				image: taskImage,
+				status: taskStatus,
+			},
+		});
 	};
 
 	return (
@@ -262,7 +304,10 @@ export default function CreateTask() {
 							</span>
 						</div>
 					</div>
-					<Button type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}>
+					<Button
+						type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}
+						clickFunction={handleSubmit}
+					>
 						<strong>Create</strong>
 					</Button>
 				</form>

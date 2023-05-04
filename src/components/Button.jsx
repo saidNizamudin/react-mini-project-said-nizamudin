@@ -19,7 +19,7 @@ export default function Button({ clickFunction, type, children, className }) {
 		<button
 			disabled={type == 'Disabled'}
 			className={classNames(styles.button, colorStyle(type), className)}
-			onClick={clickFunction}
+			onClick={type == 'Disabled' ? () => {} : clickFunction}
 		>
 			{children}
 		</button>

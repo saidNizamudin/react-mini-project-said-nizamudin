@@ -24,14 +24,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 							}
 						></Route>
 						<Route
-							path="/create-task"
-							element={
-								<Content>
-									<CreateTask />
-								</Content>
-							}
-						></Route>
-						<Route
 							path="/create-list"
 							element={
 								<Content>
@@ -40,10 +32,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 							}
 						></Route>
 						<Route
-							path="/list-detail/:id"
+							path="/list/:id"
 							element={
 								<Content>
 									<ListDetail />
+								</Content>
+							}
+						></Route>
+						<Route
+							path="/list/:id/create"
+							element={
+								<Content>
+									<CreateTask />
 								</Content>
 							}
 						></Route>
