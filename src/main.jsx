@@ -43,7 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 							path="/list/:id/create"
 							element={
 								<Content>
-									<CreateTask />
+									<ListDetail />
 								</Content>
 							}
 						></Route>
