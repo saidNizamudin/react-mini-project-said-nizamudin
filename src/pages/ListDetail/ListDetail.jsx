@@ -11,6 +11,7 @@ import {
 	faStar,
 	faCheckCircle,
 	faStickyNote,
+	faCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import { Pill, Button } from '../../components';
@@ -277,22 +278,8 @@ export default function ListDetail() {
 			return acc;
 		},
 		{
-			toDo: [
-				<Pill
-					isCreate
-					onClick={() => {
-						navigate(`/list/${listId}/create`);
-					}}
-				></Pill>,
-			],
-			inProgress: [
-				<Pill
-					isCreate
-					onClick={() => {
-						navigate(`/list/${listId}/create`);
-					}}
-				></Pill>,
-			],
+			toDo: [],
+			inProgress: [],
 			done: [],
 		}
 	);
@@ -321,6 +308,15 @@ export default function ListDetail() {
 					isUseDetail ? styles.slideInTable : styles.slideOutTable
 				)}
 			>
+				<span
+					className={styles.createTaskContainer}
+					onClick={() => {
+						navigate(`/list/${listId}/create`);
+					}}
+				>
+					<FontAwesomeIcon icon={faCirclePlus} className={styles.createTaskIcon} />
+					Create New Task
+				</span>
 				<table className={styles.table}>
 					<thead>
 						<tr>
