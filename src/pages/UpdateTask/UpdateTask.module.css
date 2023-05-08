@@ -1,0 +1,232 @@
+.title {
+	font-size: 2em;
+	font-weight: 200;
+	margin: 0 0 1em 0;
+}
+
+.formGroup {
+	display: flex;
+	margin-bottom: 3em;
+	flex-direction: row;
+}
+
+.labelContainer {
+	width: 30%;
+	display: flex;
+}
+
+.label {
+	font-size: 1em;
+	font-weight: 700;
+	text-align: left;
+	margin-bottom: 0.25em;
+}
+
+.inputContainer {
+	width: 100%;
+	display: flex;
+	position: relative;
+	flex-direction: column;
+}
+
+.imageContainer {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.icon > div {
+	width: 100% !important;
+}
+
+.input,
+.icon > div > input,
+.select > div,
+.inputImageContainer,
+.inputImageContainerFilled {
+	width: -webkit-fill-available;
+	padding: 0.5em 1em;
+	border: 2px solid black;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+.dateTime {
+	font-size: 12px;
+}
+
+.descContainer {
+	width: 100%;
+}
+
+.descContainer > div {
+	padding: 0.5em 1em;
+	border: 2px solid black;
+	border-radius: 10px;
+	font-size: 15px;
+	line-height: 2px;
+}
+
+.descContainer > div > div:nth-child(1) > div > div:hover,
+.descContainer > div > div:nth-child(1) > div > div:active,
+.descContainer > div > div:nth-child(1) > div > div[aria-selected='true'] {
+	box-shadow: 2px 2px 2px #000000;
+}
+
+.select > div:hover {
+	border: 2px solid black;
+}
+
+.select > div > div {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.select > div > div:nth-child(2) {
+	margin-right: 1.5em;
+}
+
+.input::placeholder,
+.icon > div > input::placeholder,
+.select > div > div > div[id='react-select-3-placeholder'],
+.inputImageContainer {
+	color: #a9a9a9;
+	margin: 0;
+}
+
+.inputImageContainerFilled {
+	color: black;
+	margin: 0;
+}
+
+input[type='file'] {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	opacity: 0;
+}
+
+.inputImageContainer,
+.inputImageContainerFilled {
+	position: relative;
+}
+
+.inputImageFlex {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.helpIcon {
+	margin-right: 0.5em;
+}
+
+.uploadIcon {
+	color: black;
+	margin-right: 0.5em;
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+}
+
+.iconSuccess {
+	color: green;
+	position: absolute;
+	right: 1em;
+}
+
+.iconError {
+	color: red;
+	position: absolute;
+	right: 1em;
+}
+
+.helpText {
+	font-size: 12px;
+	text-align: left;
+	margin-top: 0.1em;
+}
+
+.helpTextSuccess {
+	color: green;
+}
+
+.helpTextError {
+	color: red;
+}
+
+.imagePill,
+.addImageContainer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background-color: #424242;
+	color: white;
+	border-radius: 10px;
+	padding: 0.5em 1em;
+	margin: 0.5em 0.5em 0.5em 0;
+	transition: all 0.2s ease-in-out;
+}
+
+.addImageContainer {
+	position: relative;
+}
+
+.imagePill:hover {
+	background-color: #636363;
+}
+
+.deleteImageIcon,
+.viewImageIcon {
+	color: white;
+	cursor: pointer;
+	margin-left: 1em;
+}
+
+.deleteImageIcon:hover,
+.viewImageIcon:hover {
+	transform: scale(1.1);
+}
+
+.addImageInput {
+	position: absolute;
+	width: inherit;
+	height: inherit;
+}
+
+.modal {
+	height: -webkit-fill-available;
+	padding: 1em;
+}
+
+.modalContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 100%;
+}
+
+.modalContent > span {
+	font-size: 20px;
+}
+
+.buttonModal {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 80%;
+	font-size: 14px;
+}
+
+.buttonModal > button {
+	width: 45%;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import styles from './CreateTask.module.css';
-import { EditorState, convertToRaw } from 'draft-js';
+import styles from './UpdateTask.module.css';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import Datetime from 'react-datetime';
 import CreatableSelect from 'react-select/creatable';
@@ -13,55 +13,99 @@ import {
 	faCloudUpload,
 	faTrash,
 	faSpinner,
+	faAdd,
+	faEye,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import classNames from 'classnames/bind';
-import { INSERT_TASK } from '../../clients/task';
+import { UPDATE_TASK, GET_TASK_BY_ID } from '../../clients/task';
 import { useParams, useNavigate } from 'react-router-dom';
 import storage from '../../utilities/storage';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { ToastContainer, toast } from 'react-toastify';
+import { LoopCircleLoading } from 'react-loadingg';
+import Lightbox from 'react-awesome-lightbox';
+import Modal from 'react-awesome-modal';
 
+import 'react-awesome-lightbox/build/style.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'react-datetime/css/react-datetime.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function CreateTask() {
+export default function UpdateTask() {
 	const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
 	const [validation, setValidation] = useState({});
 	const [taskDesc, setTaskDesc] = useState({ blocks: [], entityMap: {} });
 	const [taskName, setTaskName] = useState('');
 	const [taskImage, setTaskImage] = useState([]);
-	const [taskImageName, setTaskImageName] = useState('');
 	const [taskDeadline, setTaskDeadline] = useState('');
 	const [taskStatus, setTaskStatus] = useState('');
+	const [showLightbox, setShowLightbox] = useState(false);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [selectedImage, setSelectedImage] = useState({});
+	const [imageShown, setImageShown] = useState({});
 
 	const userId = storage.get('userId', '');
-	const { id: listId } = useParams();
+	const { id: listId, taskId } = useParams();
 	const navigate = useNavigate();
 
-	const [insertTask, { loading }] = useMutation(INSERT_TASK, {
+	const { loading: loadingFetching, data: taskData } = useQuery(GET_TASK_BY_ID, {
+		variables: {
+			id: taskId,
+		},
+	});
+
+	const [updateTask, { loading }] = useMutation(UPDATE_TASK, {
 		onCompleted: (response) => {
-			const data = response.insert_task.returning;
+			const data = response.update_task.returning;
 
 			if (data.length > 0) {
-				toast.success(`${data[0].name} created successfully`, {
+				toast.success(`${data[0].name} updated successfully`, {
 					position: toast.POSITION.TOP_RIGHT,
 				});
 				navigate(`/list/${listId}`);
 			} else {
-				toast.error('Task could not be created. Please try again later', {
+				toast.error('Task could not be updated. Please try again later', {
 					position: toast.POSITION.TOP_RIGHT,
 				});
 			}
 		},
 		onError: () => {
-			toast.error('Task could not be created. Please try again later', {
+			toast.error('Task could not be updated. Please try again later', {
 				position: toast.POSITION.TOP_RIGHT,
 			});
 		},
 	});
+
+	const getBase64 = (e) => {
+		return new Promise((resolve) => {
+			let baseURL = '';
+			let reader = new FileReader();
+			reader.readAsDataURL(e);
+
+			reader.onload = () => {
+				baseURL = reader.result;
+				resolve(baseURL);
+			};
+		});
+	};
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		updateTask({
+			variables: {
+				id: taskId,
+				user_id: userId,
+				list_id: listId,
+				name: taskName,
+				description: taskDesc,
+				deadline: new Date(taskDeadline).toISOString(),
+				image: JSON.stringify(taskImage),
+				status: taskStatus,
+			},
+		});
+	};
 
 	useEffect(() => {
 		setValidation({
@@ -77,44 +121,25 @@ export default function CreateTask() {
 		setTaskDesc(editorContent);
 	}, [editorState]);
 
-	const getBase64 = (e) => {
-		return new Promise((resolve) => {
-			let baseURL = '';
-			let reader = new FileReader();
-			reader.readAsDataURL(e);
+	useEffect(() => {
+		if (taskData) {
+			const data = taskData.task[0];
+			setTaskName(data.name);
+			setTaskStatus(data.status);
+			setTaskDeadline(moment(data.deadline).valueOf());
+			setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(data.description))));
+			setTaskImage(JSON.parse(data.image));
+		}
+	}, [taskData]);
 
-			reader.onload = () => {
-				baseURL = reader.result;
-				resolve(baseURL);
-			};
-		});
-	};
-
-	const handleDeleteImage = () => {
-		document.getElementById('taskImage').value = '';
-		setTaskImage([]);
-		setTaskImageName('');
-	};
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		insertTask({
-			variables: {
-				user_id: userId,
-				list_id: listId,
-				name: taskName,
-				description: taskDesc,
-				deadline: new Date(taskDeadline).toISOString(),
-				image: JSON.stringify(taskImage),
-				status: taskStatus,
-			},
-		});
-	};
+	if (loadingFetching) {
+		return <LoopCircleLoading size="large" color="black" />;
+	}
 
 	return (
 		<div>
 			<Card className={styles.form}>
-				<h1 className={styles.title}>Create New Task</h1>
+				<h1 className={styles.title}>Update {taskName}</h1>
 				<form>
 					<div className={styles.formGroup}>
 						<div className={styles.labelContainer}>
@@ -132,6 +157,7 @@ export default function CreateTask() {
 									onChange={(event) => {
 										setTaskName(event.target.value);
 									}}
+									value={taskName}
 								/>
 								{validation.taskNameLength && validation.taskNameRequired ? (
 									<FontAwesomeIcon className={styles.iconSuccess} size="lg" icon={faCircleCheck} />
@@ -187,10 +213,10 @@ export default function CreateTask() {
 								Task Image
 							</label>
 						</div>
-						<div
+						{/* <div
 							className={taskImage ? styles.inputImageContainerFilled : styles.inputImageContainer}
 						>
-							{taskImage.length > 0 ? (
+							{taskImage ? (
 								<FontAwesomeIcon
 									icon={faTrash}
 									className={styles.deleteImageIcon}
@@ -199,40 +225,61 @@ export default function CreateTask() {
 							) : (
 								<FontAwesomeIcon icon={faCloudUpload} className={styles.uploadIcon} />
 							)}
-							{taskImage.length > 0 ? taskImageName : 'Input your image'}
-							<input
-								type="file"
-								id="taskImage"
-								multiple
-								max={3}
-								accept={['image/jpg', 'image/jpeg', 'image/png']}
-								onChange={(e) => {
-									const files = e.target.files;
-									if (files.length > 3) {
-										return toast.error('You can only upload up to 3 images', {
-											position: toast.POSITION.TOP_RIGHT,
-										});
-									} else if (files.length > 1) {
-										setTaskImageName(`${files.length} Images`);
-									} else {
-										setTaskImageName(files[0].name);
-									}
-									const filePromises = [];
-									for (let i = 0; i < files.length; i++) {
-										const promise = getBase64(files[i])
-											.then((result) => {
-												return result;
-											})
-											.catch(() => {
-												return 'notFound';
-											});
-										filePromises.push(promise);
-										Promise.all(filePromises).then((results) => {
-											setTaskImage(results);
-										});
-									}
-								}}
-							/>
+							{taskImage ? taskImageName : 'Input your image'}
+							
+						</div> */}
+						<div className={styles.imageContainer}>
+							{taskImage &&
+								taskImage.map((image, index) => {
+									return (
+										<div className={styles.imagePill} key={index}>
+											Photo {index + 1}
+											<FontAwesomeIcon
+												icon={faEye}
+												className={styles.viewImageIcon}
+												onClick={() => {
+													setShowLightbox(true);
+													setImageShown({
+														url: image,
+														title: `Photo ${index + 1}`,
+													});
+												}}
+											/>
+											<FontAwesomeIcon
+												icon={faTrash}
+												className={styles.deleteImageIcon}
+												onClick={() => {
+													setShowDeleteModal(true);
+													setSelectedImage({
+														name: `Photo ${index + 1}`,
+														url: image,
+													});
+												}}
+											/>
+										</div>
+									);
+								})}
+							{taskImage.length < 3 && (
+								<div className={styles.addImageContainer}>
+									<FontAwesomeIcon icon={faAdd} className={styles.addImageIcon} />
+									<input
+										type="file"
+										id="taskImage"
+										accept={['image/jpg', 'image/jpeg', 'image/png']}
+										onChange={(e) => {
+											const files = e.target.files;
+											getBase64(files[0])
+												.then((result) => {
+													setTaskImage([...taskImage, result]);
+												})
+												.catch(() => {
+													return 'notFound';
+												});
+										}}
+										className={styles.addImageInput}
+									/>
+								</div>
+							)}
 						</div>
 					</div>
 					<div className={styles.formGroup}>
@@ -252,6 +299,7 @@ export default function CreateTask() {
 									className={styles.dateTime}
 									closeOnSelect
 									closeOnClickOutside
+									value={taskDeadline}
 								/>
 								{validation.taskDeadlineRequied ? (
 									<FontAwesomeIcon className={styles.iconSuccess} size="lg" icon={faCircleCheck} />
@@ -295,6 +343,7 @@ export default function CreateTask() {
 									onChange={(event) => {
 										setTaskStatus(event ? event.value : '');
 									}}
+									value={{ value: taskStatus, label: taskStatus }}
 								/>
 								{validation.taskStatusRequied ? (
 									<FontAwesomeIcon className={styles.iconSuccess} size="lg" icon={faCircleCheck} />
@@ -321,11 +370,54 @@ export default function CreateTask() {
 						type={Object.values(validation).includes(false) ? 'Disabled' : 'Primary'}
 						clickFunction={handleSubmit}
 					>
-						{loading ? <FontAwesomeIcon icon={faSpinner} spin /> : <strong>Create</strong>}
+						{loading ? <FontAwesomeIcon icon={faSpinner} spin /> : <strong>Update</strong>}
 					</Button>
 				</form>
 			</Card>
+			{showLightbox && (
+				<Lightbox
+					image={imageShown.url}
+					title={imageShown.title}
+					onClose={() => {
+						setShowLightbox(false);
+						setImageShown('');
+					}}
+				/>
+			)}
 			<ToastContainer />
+			<Modal
+				visible={showDeleteModal}
+				height="20%"
+				width="40%"
+				onClickAway={() => setShowDeleteModal(false)}
+			>
+				<div className={styles.modal}>
+					<div className={styles.modalContent}>
+						<span>
+							Are you sure you want to delete <strong>{selectedImage.name}</strong>?
+						</span>
+						<div className={styles.buttonModal}>
+							<Button
+								type="Primary"
+								clickFunction={() => {
+									setTaskImage(taskImage.filter((image) => image != selectedImage.url));
+									setShowDeleteModal(false);
+								}}
+							>
+								Yes, I'm sure
+							</Button>
+							<Button
+								type="Danger"
+								clickFunction={() => {
+									setShowDeleteModal(false);
+								}}
+							>
+								No
+							</Button>
+						</div>
+					</div>
+				</div>
+			</Modal>
 		</div>
 	);
 }

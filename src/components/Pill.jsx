@@ -16,8 +16,10 @@ export default function Pill({ isDone, isCreate, children, onClick }) {
 	}
 
 	return (
-		<div className={classNames(styles.pill, isDone && styles.done)} onClick={onClick}>
-			<div className={styles.content}>{children}</div>
-		</div>
+		<>
+			<div className={classNames(styles.pill, isDone && styles.done)} onClick={onClick}>
+				<div className={styles.content}>{children}</div>
+			</div>
+		</>
 	);
 }

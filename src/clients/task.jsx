@@ -2,11 +2,28 @@ import { gql } from '@apollo/client';
 
 export const SUBSCRIBE_TASK = gql`
 	subscription SUBSCRIBE_TASK($list_id: uuid) {
-		task(where: { list_id: { _eq: $list_id } }) {
+		task(
+			where: { list_id: { _eq: $list_id } }
+			order_by: [{ is_prioritize: desc }, { deadline: asc }]
+		) {
 			id
 			name
 			status
 			deadline
+			image
+			description
+			is_prioritize
+		}
+	}
+`;
+
+export const GET_TASK_BY_ID = gql`
+	query GET_TASK_BY_ID($id: uuid) {
+		task(where: { id: { _eq: $id } }) {
+			id
+			name
+			deadline
+			status
 			image
 			description
 		}
@@ -75,6 +92,28 @@ export const UPDATE_TASK = gql`
 			returning {
 				id
 				name
+			}
+		}
+	}
+`;
+
+export const UPDATE_TASK_STATUS = gql`
+	mutation UPDATE_TASK_STATUS($id: uuid, $status: String) {
+		update_task(where: { id: { _eq: $id } }, _set: { status: $status }) {
+			returning {
+				id
+				status
+			}
+		}
+	}
+`;
+
+export const UPDATE_TASK_PRIORITY = gql`
+	mutation UPDATE_TASK_PRIORITY($id: uuid, $is_prioritize: Boolean) {
+		update_task(where: { id: { _eq: $id } }, _set: { is_prioritize: $is_prioritize }) {
+			returning {
+				id
+				is_prioritize
 			}
 		}
 	}
