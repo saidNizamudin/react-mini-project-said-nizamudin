@@ -8,24 +8,40 @@ import {
 	faInfoCircle,
 	faTrash,
 	faSpinner,
+	faStar,
+	faCheckCircle,
+	faStickyNote,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import { Pill, Button } from '../../components';
 import { findMaxLength } from '../../utilities/find_max_length';
 import classNames from 'classnames/bind';
 import { useSubscription, useMutation } from '@apollo/client';
-import { SUBSCRIBE_TASK, DELETE_TASK } from '../../clients/task';
+import {
+	SUBSCRIBE_TASK,
+	DELETE_TASK,
+	UPDATE_TASK_STATUS,
+	UPDATE_TASK_PRIORITY,
+} from '../../clients/task';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LoopCircleLoading } from 'react-loadingg';
 import Modal from 'react-awesome-modal';
 import { ToastContainer, toast } from 'react-toastify';
+import { EditorState, convertFromRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import Lightbox from 'react-awesome-lightbox';
+import { getCountdown, getLateStatus } from '../../utilities/date';
 
+import 'react-awesome-lightbox/build/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function ListDetail() {
+	const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+
 	const [selectedTask, setSelectedTask] = useState();
 	const [isUseDetail, setIsUseDetail] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showImageModal, setShowImageModal] = useState(false);
 
 	const { id: listId } = useParams();
 	const navigate = useNavigate();
@@ -51,6 +67,22 @@ export default function ListDetail() {
 		},
 	});
 
+	const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
+		onError: () => {
+			toast.error('Task status could not be updated. Please try again later', {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
+
+	const [updateTaskPriority] = useMutation(UPDATE_TASK_PRIORITY, {
+		onError: () => {
+			toast.error('Task priority could not be updated. Please try again later', {
+				position: toast.POSITION.TOP_RIGHT,
+			});
+		},
+	});
+
 	const handleDelete = () => {
 		deleteTask({
 			variables: {
@@ -66,10 +98,65 @@ export default function ListDetail() {
 					<Pill
 						onClick={() => {
 							setSelectedTask(task);
+							setEditorState(() =>
+								EditorState.createWithContent(convertFromRaw(JSON.parse(task.description)))
+							);
 							setIsUseDetail(true);
 						}}
 					>
-						{task.name}
+						<div className={styles.pillContent}>
+							<div className={styles.pillContentText}>
+								<span className={styles.pillTitle}>{task.name}</span>
+								<span
+									className={
+										getLateStatus(task.deadline) ? styles.pillCountdownLate : styles.pillCountdown
+									}
+								>
+									{getCountdown(task.deadline)}
+								</span>
+							</div>
+							<div className={styles.pillContentButton}>
+								<FontAwesomeIcon
+									icon={faStar}
+									className={task.is_prioritize ? styles.pillStarSelected : styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskPriority({
+											variables: {
+												id: task.id,
+												is_prioritize: !task.is_prioritize,
+											},
+										});
+									}}
+								/>
+								<FontAwesomeIcon
+									icon={faSpinner}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'In Progress',
+											},
+										});
+									}}
+								/>
+								<FontAwesomeIcon
+									icon={faCheckCircle}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'Done',
+											},
+										});
+									}}
+								/>
+							</div>
+						</div>
 					</Pill>
 				);
 			} else if (task.status === 'In Progress') {
@@ -77,10 +164,65 @@ export default function ListDetail() {
 					<Pill
 						onClick={() => {
 							setSelectedTask(task);
+							setEditorState(() =>
+								EditorState.createWithContent(convertFromRaw(JSON.parse(task.description)))
+							);
 							setIsUseDetail(true);
 						}}
 					>
-						{task.name}
+						<div className={styles.pillContent}>
+							<div className={styles.pillContentText}>
+								<span className={styles.pillTitle}>{task.name}</span>
+								<span
+									className={
+										getLateStatus(task.deadline) ? styles.pillCountdownLate : styles.pillCountdown
+									}
+								>
+									{getCountdown(task.deadline)}
+								</span>
+							</div>
+							<div className={styles.pillContentButton}>
+								<FontAwesomeIcon
+									icon={faStar}
+									className={task.is_prioritize ? styles.pillStarSelected : styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskPriority({
+											variables: {
+												id: task.id,
+												is_prioritize: !task.is_prioritize,
+											},
+										});
+									}}
+								/>
+								<FontAwesomeIcon
+									icon={faStickyNote}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'To Do',
+											},
+										});
+									}}
+								/>
+								<FontAwesomeIcon
+									icon={faCheckCircle}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'Done',
+											},
+										});
+									}}
+								/>
+							</div>
+						</div>
 					</Pill>
 				);
 			} else if (task.status === 'Done') {
@@ -89,10 +231,46 @@ export default function ListDetail() {
 						isDone
 						onClick={() => {
 							setSelectedTask(task);
+							setEditorState(() =>
+								EditorState.createWithContent(convertFromRaw(JSON.parse(task.description)))
+							);
 							setIsUseDetail(true);
 						}}
 					>
-						{task.name}
+						<div className={styles.pillContent}>
+							<div className={styles.pillContentText}>
+								<span className={styles.pillTitleDone}>{task.name}</span>
+								<span className={styles.pillCountdownDone}>Done</span>
+							</div>
+							<div className={styles.pillContentButton}>
+								<FontAwesomeIcon
+									icon={faStickyNote}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'To Do',
+											},
+										});
+									}}
+								/>
+								<FontAwesomeIcon
+									icon={faSpinner}
+									className={styles.pillButton}
+									onClick={(e) => {
+										e.stopPropagation();
+										updateTaskStatus({
+											variables: {
+												id: task.id,
+												status: 'In Progress',
+											},
+										});
+									}}
+								/>
+							</div>
+						</div>
 					</Pill>
 				);
 			}
@@ -118,6 +296,18 @@ export default function ListDetail() {
 			done: [],
 		}
 	);
+
+	const handleImageShow = (data) => {
+		const images = JSON.parse(data);
+		if (images) {
+			return images.map((image) => {
+				return {
+					url: image,
+					title: selectedTask.name,
+				};
+			});
+		}
+	};
 
 	if (loading) {
 		return <LoopCircleLoading size="large" color="black" />;
@@ -189,10 +379,33 @@ export default function ListDetail() {
 									</div>
 									<div className={styles.detailPoint}>
 										<span className={styles.label}>Image</span>
-										<span className={styles.image}>{selectedTask.image}</span>
+										{JSON.parse(selectedTask.image).length > 0 ? (
+											<span
+												className={styles.image}
+												onClick={() => {
+													setShowImageModal(true);
+												}}
+											>
+												Show Image
+											</span>
+										) : (
+											<span className={styles.noImage}>No Image</span>
+										)}
 									</div>
 									<hr className={styles.detailDivider} />
-									<div className={styles.description}>{selectedTask.description}</div>
+									<div className={styles.description}>
+										{editorState.getCurrentContent().hasText() ? (
+											<Editor
+												editorState={editorState}
+												toolbar={{
+													options: [],
+												}}
+												stripPastedStyles={true}
+											/>
+										) : (
+											<span className={styles.noDescription}>No Description</span>
+										)}
+									</div>
 								</div>
 							</div>
 							<div className={styles.detailAction}>
@@ -200,7 +413,7 @@ export default function ListDetail() {
 									type="Secondary"
 									className={styles.detailButton}
 									clickFunction={() => {
-										navigate(`/list/${listId}/edit/${selectedTask.id}`);
+										navigate(`/list/${listId}/${selectedTask.id}`);
 									}}
 								>
 									<FontAwesomeIcon icon={faEdit} className={styles.actionIcon} />
@@ -283,6 +496,15 @@ export default function ListDetail() {
 					</div>
 				</div>
 			</Modal>
+			{showImageModal && (
+				<Lightbox
+					images={handleImageShow(selectedTask?.image)}
+					title={selectedTask?.name}
+					onClose={() => {
+						setShowImageModal(false);
+					}}
+				/>
+			)}
 			<ToastContainer />
 		</>
 	);

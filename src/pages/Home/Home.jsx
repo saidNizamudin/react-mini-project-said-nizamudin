@@ -3,7 +3,7 @@ import styles from './Home.module.css';
 import { Card } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import { dateFromNow } from '../../utilities/date_from_now';
+import { dateFromNow } from '../../utilities/date';
 import { useSubscription } from '@apollo/client';
 import { SUBSCRIBE_LIST } from '../../clients/list';
 import { LoopCircleLoading } from 'react-loadingg';
