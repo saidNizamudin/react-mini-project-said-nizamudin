@@ -2,7 +2,7 @@
 	width: 100%;
 	border-radius: 10px;
 	min-height: 4em;
-	height: inherit;
+	height: 120px;
 	display: flex;
 	align-items: center;
 	text-transform: uppercase;
@@ -16,7 +16,6 @@
 }
 
 .content {
-	margin: 0.75em;
 	word-break: break-word;
 	font-size: 14px;
 	width: 100%;
@@ -29,23 +28,4 @@
 
 .done:hover {
 	text-decoration: none;
-}
-
-.create {
-	background-color: #e0e0e0;
-	color: black;
-	text-transform: none !important;
-}
-
-.create:hover {
-	background-color: #c2c2c2;
-}
-
-.create > .content {
-	display: flex;
-	align-items: center;
-}
-
-.create > .content > span {
-	margin-left: 0.5em;
 }
