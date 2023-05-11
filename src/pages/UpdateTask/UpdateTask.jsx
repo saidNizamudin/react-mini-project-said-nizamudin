@@ -4,13 +4,13 @@ import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import Datetime from 'react-datetime';
 import CreatableSelect from 'react-select/creatable';
-import { Card, Button } from '../../components';
+import Card from '../../components/Card';
+import Button from '../../components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faCircleExclamation,
 	faCircleCheck,
 	faCircleInfo,
-	faCloudUpload,
 	faTrash,
 	faSpinner,
 	faAdd,
